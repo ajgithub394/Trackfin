@@ -1,15 +1,16 @@
 [build]
-builder = "nixpacks"
-buildCommand = "cd backend && npm install"
+builder = "NIXPACKS"
+watchPatterns = ["backend/**"]
 
 [deploy]
+numReplicas = 1
 startCommand = "cd backend && node server.js"
-healthcheckPath = "/health"
-healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
 
-[nixpacks]
-nodejs = "18"
-workdir = "backend"
-
-[phases.setup]
-nixPkgs = ["nodejs", "npm"] 
+[[services]]
+name = "backend"
+envVars = [
+    { key = "NODE_ENV", value = "production" },
+    { key = "PORT", value = "8000" }
+] 
